@@ -1,12 +1,12 @@
-saldo = 0
 
-stan_magazynu = {'Kolano': 12,
-                 'Mufa': 21,
-                 'Trójnik': 45,
-                 'Kształtka': 19,
-                 }
+with open("saldo.txt", "r") as saldo_wczytane:
+    saldo = float(saldo_wczytane.read())
 
-historia = []
+with open("magazyn.txt", "r") as f:
+    stan_magazynu_string = f.readline()
+
+stan_magazynu = eval(stan_magazynu_string)
+
 
 while True:
     wybor = input("1. Saldo \n"
@@ -26,7 +26,8 @@ while True:
         zmiana_salda = float(input("Podaj wartość kwoty dodawanej/odejmowanej z konta [PLN]: "))
         if zmiana_salda > 0 or zmiana_salda < 0:
             saldo += zmiana_salda
-            historia.append(f"Zmiana salda: {zmiana_salda}")
+            with open("historia_operacji.txt", "a") as historia_wczytana:
+                historia_wczytana.write(f"Zmiana salda: {zmiana_salda}\n")
             while saldo < 0:
                 saldo -= zmiana_salda
                 print("Błąd! Brak wystarczających środków na koncie!")
@@ -58,11 +59,12 @@ while True:
 
         else:
             saldo += (cena_sprzedaz * ilosc_sprzedaz)
-            historia.append(f"Sprzedaż: {wybrana_nazwa_sprzedaz}, {ilosc_sprzedaz}")
+            with open("historia_operacji.txt", "a") as historia_wczytana:
+                historia_wczytana.write(f"Sprzedaż: {wybrana_nazwa_sprzedaz}, {ilosc_sprzedaz}\n")
             for element in stan_magazynu:
                 stan_magazynu[element] -= ilosc_sprzedaz
 
-        print(f"Poprawnie przeprowadzono sprzedaż. /n"
+        print(f"Poprawnie przeprowadzono sprzedaż. \n"
               f"Aktualny stan konta: {saldo} [PLN]")
 
     # 3. Zakup
@@ -82,12 +84,12 @@ while True:
             print("Brak wystarczających środków na zakup.")
         else:
             saldo -= (cena_kupno * ilosc_kupno)
-            historia.append(f"Kupno: {wybrana_nazwa_kupno}, {ilosc_kupno}")
+            with open("historia_operacji.txt", "a") as historia_wczytana:
+                historia_wczytana.write(f"Kupno: {wybrana_nazwa_kupno}, {ilosc_kupno} \n")
             if not stan_magazynu.get(wybrana_nazwa_kupno):
                 stan_magazynu[wybrana_nazwa_kupno] = ilosc_kupno
-
-        print(f"Poprawnie przeprowadzono zakup. /n"
-              f"Aktualny stan konta: {saldo} [PLN]")
+            print(f"Poprawnie przeprowadzono zakup. \n"
+                  f"Aktualny stan konta: {saldo} [PLN]")
 
     # 4. Konto
 
@@ -97,7 +99,11 @@ while True:
     # 5. Lista
 
     elif wybor == "5":
-        print(f"Aktualnny stan magazynu: {stan_magazynu}")
+        print(f"Aktualny stan magazynu: ")
+        print("*"*10)
+        for i, k in stan_magazynu.items():
+            print(i, k, "szt.")
+        print("*" * 10)
 
     # 6. Magazyn
 
@@ -114,6 +120,9 @@ while True:
 
     elif wybor == "7":
 
+        with open("historia_operacji.txt.") as historia_wczytana:
+            historia = historia_wczytana.readlines()
+
         print("Podaj zakres operacji do przeglądu, lub wstaw 0, aby wyświetlić wszystkie:")
         przeglad_1 = int(input("Podaj pierwszą operację z zakresu: "))
         przeglad_2 = int(input("Podaj drugą operację z zakresu: "))
@@ -122,11 +131,25 @@ while True:
             print(f"Lista operacji z zakresu {przeglad_1}-{przeglad_2} \n"
                   f"{historia[przeglad_1 - 1 : przeglad_2]}")
         else:
-            print(historia)
+            print("*"*10)
+            print("Całkowita lista operacji: ")
+
+            for k, v in enumerate(historia):
+                print(k, v.strip())
+
+            print("*" * 10)
 
     # 8. Koniec
 
     elif wybor == "8":
+
+        with open("saldo.txt", "w") as saldo_wczytane:
+            saldo_wczytane.write(str(saldo))
+
+        with open("magazyn.txt", "w") as f:
+            stan_magazynu_string = str(stan_magazynu)
+            f.write(stan_magazynu_string)
+
         break
 
     else:
