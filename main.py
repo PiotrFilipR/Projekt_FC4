@@ -1,12 +1,14 @@
+import json
 
 with open("saldo.txt", "r") as saldo_wczytane:
-    saldo = float(saldo_wczytane.read())
+    saldo = saldo_wczytane.read().strip()
+    if not saldo:
+        saldo = 0
+    else:
+        saldo = float(saldo)
 
 with open("magazyn.txt", "r") as f:
-    stan_magazynu_string = f.readline()
-
-stan_magazynu = eval(stan_magazynu_string)
-
+    stan_magazynu = json.load(f)
 
 while True:
     wybor = input("1. Saldo \n"
@@ -23,17 +25,22 @@ while True:
     # 1. Saldo
 
     if wybor == "1":
-        zmiana_salda = float(input("Podaj wartość kwoty dodawanej/odejmowanej z konta [PLN]: "))
-        if zmiana_salda > 0 or zmiana_salda < 0:
-            saldo += zmiana_salda
-            with open("historia_operacji.txt", "a") as historia_wczytana:
-                historia_wczytana.write(f"Zmiana salda: {zmiana_salda}\n")
-            while saldo < 0:
-                saldo -= zmiana_salda
-                print("Błąd! Brak wystarczających środków na koncie!")
-                break
+        zmiana_salda1 = input("Podaj wartość kwoty dodawanej/odejmowanej z konta [PLN]: ")
+        if [a for a in zmiana_salda1 if a.isdigit() or a == '.']:
+            zmiana_salda = float(zmiana_salda1)
+            if zmiana_salda > 0 or zmiana_salda < 0:
+                saldo += zmiana_salda
+                with open("historia_operacji.txt", "a") as historia_wczytana:
+                    historia_wczytana.write(f"Zmiana salda: {zmiana_salda}\n")
+                while saldo < 0:
+                    saldo -= zmiana_salda
+                    print("Błąd! Brak wystarczających środków na koncie!")
+                    pass
+            else:
+                print("Błąd! Podano wartość 0!")
         else:
-            print("Błąd! Podano wartość 0!")
+            print("Błąd! Podano złą wartość.")
+            pass
 
         print(f"Aktualny stan konta: {saldo} [PLN]")
 
