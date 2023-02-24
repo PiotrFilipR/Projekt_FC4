@@ -154,8 +154,7 @@ while True:
             saldo_wczytane.write(str(saldo))
 
         with open("magazyn.txt", "w") as f:
-            stan_magazynu_string = str(stan_magazynu)
-            f.write(stan_magazynu_string)
+            json.dump(stan_magazynu, f)
 
         break
 

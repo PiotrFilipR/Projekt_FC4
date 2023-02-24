@@ -1,1 +1,1 @@
-{'Kolano': 12, 'Mufa': 21, 'Trojnik': 45, 'Ksztaltka': 19, 'Korek': 16}
+{"Kolano": 12, "Mufa": 21, "Trojnik": 45, "Ksztaltka": 19, "Korek": 16}
